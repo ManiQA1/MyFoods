@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyFoods — Desi Flavours Delivered</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="logo">🍛 <span>MyFoods</span></div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#track">Track Order</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="cart-btn" onclick="toggleCart()">🛒 Cart <span id="cart-count">0</span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-content">
+    <p class="hero-tag">🌶️ Authentic Indian Cuisine</p>
+    <h1>Desi Flavours,<br><em>Delivered Fresh</em></h1>
+    <p class="hero-sub">From your favourite dhabas to your doorstep — hot, fresh & on time.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-primary">Order Now</a>
+      <a href="#track" class="btn-outline">Track Order</a>
+    </div>
+    <div class="hero-stats">
+      <div><strong>50k+</strong><span>Happy Customers</span></div>
+      <div><strong>200+</strong><span>Dishes</span></div>
+      <div><strong>30 min</strong><span>Avg Delivery</span></div>
+    </div>
+  </div>
+  <div class="hero-img">
+    <div class="food-card-float fc1">🍛 Butter Chicken</div>
+    <div class="food-card-float fc2">🥘 Dal Makhani</div>
+    <div class="food-card-float fc3">🫓 Garlic Naan</div>
+    <div class="big-emoji">🍲</div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <div class="container">
+    <h2 class="section-title">Browse by <em>Category</em></h2>
+    <div class="cat-grid">
+      <div class="cat-card active" onclick="filterMenu('all')">🍽️ All</div>
+      <div class="cat-card" onclick="filterMenu('north')">🏔️ North Indian</div>
+      <div class="cat-card" onclick="filterMenu('south')">🌴 South Indian</div>
+      <div class="cat-card" onclick="filterMenu('street')">🛺 Street Food</div>
+      <div class="cat-card" onclick="filterMenu('dessert')">🍮 Desserts</div>
+      <div class="cat-card" onclick="filterMenu('drinks')">🥤 Drinks</div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" class="menu-section">
+  <div class="container">
+    <h2 class="section-title">Our <em>Menu</em></h2>
+    <div class="menu-grid" id="menu-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <h3>Your Order 🛒</h3>
+    <button onclick="toggleCart()" class="close-cart">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <p class="empty-cart">Your cart is empty 🥺</p>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none">
+    <div class="cart-summary">
+      <div class="summary-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+      <div class="summary-row"><span>GST (5%)</span><span id="gst">₹0</span></div>
+      <div class="summary-row"><span>Delivery Fee</span><span>₹40</span></div>
+      <div class="summary-row total"><span>Total</span><span id="total">₹0</span></div>
+    </div>
+    <button class="btn-primary full-width" onclick="showCheckout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-bg" id="checkout-modal">
+  <div class="modal" id="checkout-box">
+    <div class="modal-header">
+      <h3>Checkout</h3>
+      <button onclick="closeCheckout()" class="close-cart">✕</button>
+    </div>
+    <div class="modal-steps">
+      <div class="step active" id="step-dot-1">1</div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-2">2</div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-3">3</div>
+    </div>
+
+    <!-- Step 1: Address -->
+    <div class="step-content" id="step-1">
+      <h4>Delivery Address</h4>
+      <div class="form-group">
+        <input type="text" placeholder="Full Name" id="cust-name" />
+        <input type="tel" placeholder="Mobile Number (10 digits)" id="cust-phone" />
+      </div>
+      <textarea placeholder="Flat/House No, Street, Area" id="cust-addr" rows="3"></textarea>
+      <div class="form-group">
+        <input type="text" placeholder="City" id="cust-city" />
+        <input type="text" placeholder="Pincode" id="cust-pin" />
+      </div>
+      <button class="btn-primary full-width" onclick="goStep(2)">Continue →</button>
+    </div>
+
+    <!-- Step 2: Payment -->
+    <div class="step-content hidden" id="step-2">
+      <h4>Select Payment Method</h4>
+      <div class="pay-methods">
+        <label class="pay-option selected" onclick="selectPay(this,'upi')">
+          <input type="radio" name="pay" value="upi" checked>
+          <span class="pay-icon">📱</span>
+          <div>
+            <strong>UPI</strong>
+            <small>GPay, PhonePe, Paytm, BHIM</small>
+          </div>
+        </label>
+        <label class="pay-option" onclick="selectPay(this,'card')">
+          <input type="radio" name="pay" value="card">
+          <span class="pay-icon">💳</span>
+          <div>
+            <strong>Credit / Debit Card</strong>
+            <small>Visa, Mastercard, RuPay</small>
+          </div>
+        </label>
+        <label class="pay-option" onclick="selectPay(this,'netbanking')">
+          <input type="radio" name="pay" value="netbanking">
+          <span class="pay-icon">🏦</span>
+          <div>
+            <strong>Net Banking</strong>
+            <small>All major Indian banks</small>
+          </div>
+        </label>
+        <label class="pay-option" onclick="selectPay(this,'wallet')">
+          <input type="radio" name="pay" value="wallet">
+          <span class="pay-icon">👛</span>
+          <div>
+            <strong>Wallets</strong>
+            <small>Paytm, Amazon Pay, MobiKwik</small>
+          </div>
+        </label>
+        <label class="pay-option" onclick="selectPay(this,'cod')">
+          <input type="radio" name="pay" value="cod">
+          <span class="pay-icon">💵</span>
+          <div>
+            <strong>Cash on Delivery</strong>
+            <small>Pay when you receive</small>
+          </div>
+        </label>
+      </div>
+
+      <!-- UPI Fields -->
+      <div class="pay-fields" id="fields-upi">
+        <div class="upi-apps">
+          <button class="upi-btn" onclick="selectUPI(this,'gpay')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/512px-Google_Pay_Logo.svg.png" alt="GPay">Google Pay</button>
+          <button class="upi-btn" onclick="selectUPI(this,'phonepe')">📲 PhonePe</button>
+          <button class="upi-btn" onclick="selectUPI(this,'paytm')">🟦 Paytm</button>
+          <button class="upi-btn" onclick="selectUPI(this,'bhim')">🇮🇳 BHIM</button>
+        </div>
+        <input type="text" placeholder="Or enter UPI ID (e.g. yourname@upi)" id="upi-id" />
+      </div>
+
+      <!-- Card Fields -->
+      <div class="pay-fields hidden" id="fields-card">
+        <input type="text" placeholder="Card Number (16 digits)" maxlength="19" oninput="formatCard(this)" />
+        <div class="form-group">
+          <input type="text" placeholder="MM/YY" maxlength="5" />
+          <input type="text" placeholder="CVV" maxlength="3" />
+        </div>
+        <input type="text" placeholder="Name on Card" />
+        <label class="rupay-note">✅ RuPay cards accepted — Zero transaction fee!</label>
+      </div>
+
+      <!-- Net Banking -->
+      <div class="pay-fields hidden" id="fields-netbanking">
+        <select class="bank-select">
+          <option value="">Select Your Bank</option>
+          <option>State Bank of India (SBI)</option>
+          <option>HDFC Bank</option>
+          <option>ICICI Bank</option>
+          <option>Axis Bank</option>
+          <option>Kotak Mahindra Bank</option>
+          <option>Punjab National Bank</option>
+          <option>Bank of Baroda</option>
+          <option>Canara Bank</option>
+          <option>Union Bank of India</option>
+          <option>IndusInd Bank</option>
+          <option>Yes Bank</option>
+          <option>IDBI Bank</option>
+        </select>
+      </div>
+
+      <!-- Wallets -->
+      <div class="pay-fields hidden" id="fields-wallet">
+        <div class="upi-apps">
+          <button class="upi-btn active">🟦 Paytm Wallet</button>
+          <button class="upi-btn">📦 Amazon Pay</button>
+          <button class="upi-btn">🟠 MobiKwik</button>
+          <button class="upi-btn">💙 FreeCharge</button>
+        </div>
+        <input type="tel" placeholder="Registered Mobile Number" />
+      </div>
+
+      <!-- COD -->
+      <div class="pay-fields hidden" id="fields-cod">
+        <div class="cod-info">
+          <span>💵</span>
+          <div>
+            <strong>Cash on Delivery</strong>
+            <p>Keep exact change ready. Our delivery partner will collect payment upon arrival.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pay-total-bar">
+        <span>Amount to Pay:</span>
+        <strong id="pay-total-amt">₹0</strong>
+      </div>
+      <div style="display:flex;gap:12px">
+        <button class="btn-outline" onclick="goStep(1)">← Back</button>
+        <button class="btn-primary" style="flex:1" onclick="placeOrder()">Pay & Place Order 🎉</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Confirmation -->
+    <div class="step-content hidden" id="step-3">
+      <div class="order-success">
+        <div class="success-icon">✅</div>
+        <h3>Order Placed!</h3>
+        <p>Your order has been confirmed. You'll receive an SMS on your registered number.</p>
+        <div class="order-id-box">
+          Order ID: <strong id="order-id-display"></strong>
+        </div>
+        <button class="btn-primary full-width" onclick="goToTrack()">Track My Order 📍</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER TRACKING -->
+<section id="track" class="track-section">
+  <div class="container">
+    <h2 class="section-title">Track Your <em>Order</em></h2>
+    <div class="track-box">
+      <div class="track-search">
+        <input type="text" id="track-input" placeholder="Enter Order ID (e.g. MF-2024-001)" />
+        <button class="btn-primary" onclick="trackOrder()">Track 🔍</button>
+      </div>
+
+      <div class="track-result hidden" id="track-result">
+        <div class="order-meta">
+          <div><span>Order ID</span><strong id="tr-id">—</strong></div>
+          <div><span>Items</span><strong id="tr-items">—</strong></div>
+          <div><span>Total</span><strong id="tr-total">—</strong></div>
+          <div><span>ETA</span><strong id="tr-eta">—</strong></div>
+        </div>
+
+        <div class="progress-track">
+          <div class="prog-step done" id="prog-1">
+            <div class="prog-dot">✓</div>
+            <div class="prog-label">Order Confirmed</div>
+            <div class="prog-time" id="pt1">—</div>
+          </div>
+          <div class="prog-line" id="pl1"></div>
+          <div class="prog-step" id="prog-2">
+            <div class="prog-dot">🍳</div>
+            <div class="prog-label">Preparing Food</div>
+            <div class="prog-time" id="pt2">—</div>
+          </div>
+          <div class="prog-line" id="pl2"></div>
+          <div class="prog-step" id="prog-3">
+            <div class="prog-dot">🛺</div>
+            <div class="prog-label">Out for Delivery</div>
+            <div class="prog-time" id="pt3">—</div>
+          </div>
+          <div class="prog-line" id="pl3"></div>
+          <div class="prog-step" id="prog-4">
+            <div class="prog-dot">🏠</div>
+            <div class="prog-label">Delivered</div>
+            <div class="prog-time" id="pt4">—</div>
+          </div>
+        </div>
+
+        <!-- Live Map -->
+        <div class="map-section">
+          <h4>Live Delivery Location 📍</h4>
+          <div class="map-container" id="live-map">
+            <div class="map-bg">
+              <div class="map-road map-road-h" style="top:45%"></div>
+              <div class="map-road map-road-h" style="top:65%"></div>
+              <div class="map-road map-road-v" style="left:30%"></div>
+              <div class="map-road map-road-v" style="left:60%"></div>
+              <div class="map-pin restaurant" title="Restaurant">🍛</div>
+              <div class="map-pin delivery" id="delivery-pin" title="Delivery Partner">🛺</div>
+              <div class="map-pin home" title="Your Location">🏠</div>
+              <div class="map-legend">
+                <span>🍛 Restaurant</span>
+                <span>🛺 Delivery Partner</span>
+                <span>🏠 Your Location</span>
+              </div>
+            </div>
+          </div>
+          <div class="delivery-info">
+            <div class="delivery-agent">
+              <div class="agent-avatar">👨‍🍳</div>
+              <div>
+                <strong id="agent-name">Ramesh Kumar</strong>
+                <p>Your Delivery Partner</p>
+              </div>
+              <a href="tel:+919876543210" class="call-btn">📞 Call</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    <h2 class="section-title">Get in <em>Touch</em></h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h4>MyFoods India</h4>
+        <p>📍 12, MM Road, Kandukur, Andhra Pradesh — 523105</p>
+        <p>📞 1800-123-FOOD (3663)</p>
+        <p>✉️ potlurimani9@gmail.com</p>
+        <p>🕐 Open: 8 AM – 11 PM, All Days</p>
+        <div class="social-links">
+          <a href="#">Instagram</a>
+          <a href="#">Twitter</a>
+          <a href="#">Facebook</a>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="submitContact(event)">
+        <input type="text" placeholder="Your Name" required />
+        <input type="email" placeholder="Email Address" required />
+        <textarea placeholder="Your Message" rows="4" required></textarea>
+        <button type="submit" class="btn-primary full-width">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="logo">🍛 MyFoods</div>
+        <p>Made with ❤️ in India. Serving authentic desi flavours since 2020.</p>
+        <div class="accept-badges">
+          <span>UPI</span><span>GPay</span><span>PhonePe</span><span>Paytm</span><span>RuPay</span><span>COD</span>
+        </div>
+      </div>
+      <div>
+        <h5>Quick Links</h5>
+        <a href="#menu">Menu</a>
+        <a href="#track">Track Order</a>
+        <a href="#contact">Support</a>
+        <a href="#">Partner With Us</a>
+      </div>
+      <div>
+        <h5>Policies</h5>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">FAQs</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 MyFoods India Pvt. Ltd. | CIN: U1234MH2020PTC123456 | GSTIN: 27AAAAA0000A1Z5</p>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
