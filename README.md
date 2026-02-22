@@ -5,4 +5,8 @@ added readme.md file
 did pull command , worked well 
 
 
-hai
+Stages are : -
+
+   - Untracked 
+   - Added
+   - modified 
