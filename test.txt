@@ -1,0 +1,5 @@
+Stages are : -
+
+   - Untracked 
+   - Added
+   - modified 
